@@ -14,8 +14,11 @@ phases:
     commands:
       - echo Deploying
 
-      - printf "%s\n" "$EC2_PEM_KEY" > poc22.pem
-      - sed -i 's/\r$//' poc22.pem
+      # ✅ Download key from S3
+      - aws s3 cp s3://YOUR-BUCKET-NAME/poc-22.pem poc22.pem
+
+      # ✅ Set permissions
       - chmod 400 poc22.pem
 
+      # ✅ SSH deploy
       - ssh -i poc22.pem -o StrictHostKeyChecking=no ec2-user@13.233.113.80 "cd poc22 || git clone https://github.com/shaikhaseena18/poc22.git && cd poc22 && git pull && npm install && pkill node || true && nohup node app.js > app.log 2>&1 &"
