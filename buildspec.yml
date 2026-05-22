@@ -13,10 +13,6 @@ phases:
   post_build:
     commands:
       - echo Deploying
-
-     
-- echo "$EC2_PEM_KEY" | base64 -d > poc22.pem
-- chmod 400 poc22.pem
-
-
+      - echo "$EC2_PEM_KEY" | base64 -d > poc22.pem
+      - chmod 400 poc22.pem
       - ssh -i poc22.pem -o StrictHostKeyChecking=no ec2-user@65.0.205.246 "cd poc22 && git pull && npm install && pkill node || true && nohup node app.js > app.log 2>&1 &"
