@@ -13,7 +13,15 @@ phases:
   post_build:
     commands:
       - echo Deploying
+
+      # ✅ Create PEM file properly from env variable
       - printf "%s\n" "$EC2_PEM_KEY" > poc22.pem
+
+      # ✅ Fix Windows newline issue
       - sed -i 's/\r$//' poc22.pem
+
+      # ✅ Set correct permission
       - chmod 400 poc22.pem
-      - ssh -i poc22.pem -o StrictHostKeyChecking=no ec2-user@65.0.205.246 "cd poc22-nodejs-app && git pull && npm install && pkill node || true && nohup node app.js > app.log 2>&1 &"
+
+      # ✅ SSH into NEW EC2 and deploy
+      - ssh -i poc22.pem -o StrictHostKeyChecking=no ec2-user@13.233.113.80 "cd poc22 || git clone https://github.com/shaikhaseena18/poc22.git && cd poc22 && git pull && npm install && pkill node || true && nohup node app.js > app.log 2>&1 &"
