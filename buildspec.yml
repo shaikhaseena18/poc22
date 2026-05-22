@@ -14,9 +14,9 @@ phases:
     commands:
       - echo Deploying
 
-      # ✅ Create PEM properly from environment variable
-      - echo "$EC2_PEM_KEY" > poc22.pem
+      # ✅ Create PEM properly
+      - printf "%s\n" "$EC2_PEM_KEY" > poc22.pem
       - chmod 400 poc22.pem
 
-      # ✅ SSH and deploy (single line to avoid YAML issues)
+      # ✅ SSH deploy
       - ssh -i poc22.pem -o StrictHostKeyChecking=no ec2-user@65.0.205.246 "cd poc22-nodejs-app && git pull && npm install && pkill node || true && nohup node app.js > app.log 2>&1 &"
